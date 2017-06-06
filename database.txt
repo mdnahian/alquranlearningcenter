@@ -1,0 +1,88 @@
+CREATE DATABASE alquranlearningcenter;
+
+CREATE TABLE users (
+	id int NOT NULL AUTO_INCREMENT,
+	uid varchar(255) NOT NULL,
+	fname varchar(255) NOT NULL,
+	lname varchar(255) NOT NULL,
+	email varchar(255) NOT NULL,
+	password varchar(255) NOT NULL,
+	is_confirmed varchar(255) DEFAULT 'false',
+	age varchar(255) NOT NULL,
+	languages varchar(255) DEFAULT 'ENGLISH',
+	gender varchar(255) NOT NULL,
+	proficiency varchar(255) NOT NULL,
+	availability varchar(255) NOT NULL,
+	is_enabled varchar(255) DEFAULT 'false',
+	account_type varchar(255) DEFAULT 'student',
+	created TIMESTAMP DEFAULT NOW(),
+	PRIMARY KEY(id)
+);
+
+
+INSERT INTO users (uid, fname, lname, email, password, is_confirmed, age, languages, gender, proficiency, availability, is_enabled, account_type) VALUES ('q1ws2g5', 'Nahian', 'Islam', 'mdnahian@gmail.com', '$Mdni00007', 'true', '21', 'ENGLISH, BENGALI', 'MALE', 'INTERMEDIATE', 'FRIDAY, SATURDAY, WEDNESDAY', 'true', 'student');
+
+
+INSERT INTO users (uid, fname, lname, email, password, is_confirmed, age, languages, gender, proficiency, availability, is_enabled, account_type) VALUES ('r6hy7j9', 'Jane', 'Doe', 'md.islam007@rutgers.edu', 'abc123', 'true', '16', 'ENGLISH', 'FEMALE', 'BEGINNER', 'FRIDAY, SATURDAY, MONDAY', 'true', 'student');
+
+
+
+INSERT INTO users (uid, fname, lname, email, password, is_confirmed, age, languages, gender, proficiency, availability, is_enabled, account_type) VALUES ('w6sd3m9', 'John', 'Doe', 'mdnahian@outlook.com', 'abc123', 'true', '40', 'ENGLISH, BENGALI, ARABIC', 'MALE', 'ADVANCED', 'THURSDAY, SATURDAY, SUNDAY', 'true', 'teacher');
+
+
+
+
+CREATE TABLE sessions (
+	id int NOT NULL AUTO_INCREMENT,
+	sid varchar(255) NOT NULL,
+	uid_teacher varchar(255) NOT NULL,
+	uid_student varchar(255) NOT NULL,
+	datetime varchar(255) NOT NULL,
+	duration varchar(255) NOT NULL,
+	created TIMESTAMP DEFAULT NOW(),
+	is_enabled varchar(255) DEFAULT 'false',
+	PRIMARY KEY(id)
+);
+
+
+INSERT INTO sessions (sid, uid_teacher, uid_student, datetime, duration, is_enabled) VALUES ('abc123', 'w6sd3m9', 'q1ws2g5', 'Friday 9:00pm', '1', 'true');
+
+INSERT INTO sessions (sid, uid_teacher, uid_student, datetime, duration, is_enabled) VALUES ('def456', 'w6sd3m9', 'r6hy7j9', 'Friday 5:00pm', '3', 'true');
+
+
+
+CREATE TABLE messages (
+	id int NOT NULL AUTO_INCREMENT,
+	mid varchar(255) NOT NULL,
+	uid_from varchar(255) NOT NULL,
+	uid_to varchar(255) NOT NULL,
+	subject varchar(255) NOT NULL,
+	message text NOT NULL,
+	sent TIMESTAMP DEFAULT NOW(),
+	PRIMARY KEY(id)
+);
+
+
+CREATE TABLE announcements (
+	id int NOT NULL AUTO_INCREMENT,
+	aid varchar(255) NOT NULL,
+	to varchar(255) DEFAULT 'everyone',
+	is_enabled varchar(255) DEFAULT 'true',
+	PRIMARY KEY(id)	
+);
+
+
+CREATE TABLE homework (
+	id int NOT NULL AUTO_INCREMENT,
+	hid varchar(255) NOT NULL,
+	uid_teacher varchar(255) NOT NULL,
+	uid_student varchar(255) NOT NULL,
+	content text NOT NULL,
+	grade varchar(255) NOT NULL,
+	sent TIMESTAMP DEFAULT NOW(),
+	PRIMARY KEY(id)
+);
+
+
+
+

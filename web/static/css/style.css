@@ -64,6 +64,11 @@
     padding-bottom:150px;
 }
 
+.page-sm {
+    padding-top:50px;
+    padding-bottom:50px;
+}
+
 .section-sm {
     padding-top:25px;
     padding-bottom:25px;
@@ -78,4 +83,14 @@
 
 .is-drk {
     color:#242424;
+}
+
+.resource {
+    min-height:640px;
+    height:100%;
+    width:100%;
+}
+
+.message-body a {
+    text-decoration:none;
 }

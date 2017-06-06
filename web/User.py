@@ -24,7 +24,7 @@ class User:
 
     @staticmethod
     def get_db():
-        return MySQLdb.connect(host="localhost", user="root",  passwd="$Mdni00007", db="users")
+        return MySQLdb.connect(host="localhost", user="root",  passwd="$Mdni00007", db="alquranlearningcenter")
 
     @staticmethod
     def generate_random(n=8):
@@ -40,32 +40,37 @@ class User:
         db.close()
 
     def db_to_user(self, raw_user):
-        self.uid = raw_user[0]
-        self.fname = raw_user[1]
-        self.lname = raw_user[2]
-        self.email = raw_user[3]
-        self.password = raw_user[4]
-        self.is_confirmed = raw_user[5]
-        self.age = raw_user[6]
-        self.languages = raw_user[7]
-        self.gender = raw_user[8]
-        self.proficiency = raw_user[9]
+        self.uid = raw_user[1]
+        self.fname = raw_user[2]
+        self.lname = raw_user[3]
+        self.email = raw_user[4]
+        self.password = raw_user[5]
+        self.is_confirmed = raw_user[6]
+        self.age = raw_user[7]
+        self.languages = raw_user[8]
+        self.gender = raw_user[9]
+        self.proficiency = raw_user[10]
         self.availability = raw_user[11]
         self.is_enabled = raw_user[12]
         self.account_type = raw_user[13]
         return self
 
-    def get(self, uid):
-        db = self.get_db()
+    @staticmethod
+    def raw_db_to_user(raw_user):
+        return User(raw_user[1], raw_user[2], raw_user[3], raw_user[4], raw_user[5], raw_user[6], raw_user[7], raw_user[8], raw_user[9], raw_user[10], raw_user[11], raw_user[12], raw_user[13])
+
+    @staticmethod
+    def get(uid):
+        db = User.get_db()
         cur = db.cursor()
-        cur.execute("SELECT * FROM users WHERE uid=?", (uid, ))
+        cur.execute("SELECT * FROM users WHERE uid=%s", (uid, ))
         raw_user = cur.fetchone()
-        return self.db_to_user(raw_user) if raw_user is not None else raw_user
+        return User.raw_db_to_user(raw_user) if raw_user is not None else raw_user
 
     def is_authenticated(self):
         db = self.get_db()
         cur = db.cursor()
-        cur.execute("SELECT * FROM users WHERE email=? AND password=?", (self.email, self.password))
+        cur.execute("SELECT * FROM users WHERE email=%s AND password=%s", (self.email, self.password))
         raw_user = cur.fetchone()
         if raw_user is not None:
             self.db_to_user(raw_user)
@@ -80,13 +85,4 @@ class User:
         return False
 
     def get_id(self):
-        return self.uid
-
-
-
-
-
-
-
-
-
+        return self.uid        
