@@ -16,21 +16,23 @@
 
         <tbody>
             {% for session in sessions %}
-                <tr>
-                    <td>{{ session.user.fname }} {{ session.user.lname }}</td>
-                    <td>{{ session.user.proficiency }}</td>
-                    <td>{{ session.datetime }}</td>
-                    <td>{{ session.duration }} hour(s)</td>
-                    <td>
-                        <a onclick="homework('{{ session.user.uid }}')">
-                            <span class="icon is-drk"><i class="fa fa-book"></i></span>
-                        </a>
-                        &nbsp;&nbsp;&nbsp;
-                        <a onclick="message('{{ session.user.uid }}')">
-                            <span class="icon is-drk"><i class="fa fa-comment"></i></span>
-                        </a>
-                    </td>
-                </tr>
+                {% if 'user' in session %}
+                    <tr>
+                        <td>{{ session.user.fname }} {{ session.user.lname }}</td>
+                        <td>{{ session.user.proficiency }}</td>
+                        <td>{{ session.datetime }}</td>
+                        <td>{{ session.duration }} hour(s)</td>
+                        <td>
+                            <a onclick="homework('{{ session.user.uid }}')">
+                                <span class="icon is-drk"><i class="fa fa-book"></i></span>
+                            </a>
+                            &nbsp;&nbsp;&nbsp;
+                            <a onclick="message('{{ session.user.uid }}')">
+                                <span class="icon is-drk"><i class="fa fa-comment"></i></span>
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
             {% endfor %}
         </tbody>
     </table>

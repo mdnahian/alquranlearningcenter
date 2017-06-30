@@ -19,17 +19,18 @@ def get_next_session_from_sessions(sessions, uid='uid_student'):
     # print sessions
     for session in sessions:
         user = User().get(session.get(uid))
-        session['user'] = vars(user)
+        if user is not None:
+            session['user'] = vars(user)
 
-        d1 = datetime.strptime(session.get('datetime'), "%A %I:%M%p")
-        d2 = d1 + timedelta(hours=int(session.get('duration')))
-        current_d = datetime.now()
-        
-        # check if same day
-        if session.get('datetime').split(' ')[0].strip() == current_d.strftime("%A"):
-            # check if within time frame
-            if current_d.time() >= d1.time() and current_d.time() <= d2.time():
-                next_session = session
+            d1 = datetime.strptime(session.get('datetime'), "%A %I:%M%p")
+            d2 = d1 + timedelta(hours=int(session.get('duration')))
+            current_d = datetime.now()
+            
+            # check if same day
+            if session.get('datetime').split(' ')[0].strip() == current_d.strftime("%A"):
+                # check if within time frame
+                if current_d.time() >= d1.time() and current_d.time() <= d2.time():
+                    next_session = session
     return next_session
 
 
