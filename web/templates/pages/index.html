@@ -24,7 +24,7 @@
               <div class="columns">
                   <div class="column">
                       <h1 class="title">
-                          27
+                          {{ num_teachers }}
                       </h1>
                       <h3 class="subtitle">
                           TEACHERS
@@ -34,7 +34,7 @@
 
                   <div class="column">
                       <h1 class="title">
-                          104
+                          {{ num_students }}
                       </h1>
                       <h3 class="subtitle">
                           STUDENTS
@@ -47,30 +47,78 @@
 
 
 
-        <section class="hero is-white is-large">
+        <section class="hero is-white">
           <div class="hero-body">
             <div class="container">
-              <h1 class="title">
-                Large title
+              <h1 class="title has-text-centered">
+                About Us
               </h1>
-              <h2 class="subtitle">
-                Large subtitle
-              </h2>
+              
+              <div class="columns">
+                <div class="column is-7">
+                  <p>
+                    <i>As-salaamu’alaikum wa-rahmatullaahi wabaraktuh.</i>
+                  </p>
+
+                  <br>
+
+                  <p>
+                    Dear brothers and sisters,<br>
+
+                    Prophet Muhammad (S.) said, “ Khairukum man ta’allamal Qur’ana wa-‘allamahu.” Means – the best amongst you is he who learns the Qur’an and teaches it to others. We are here only follow for that Hadith. We want to teach all over the world Muslim people who are looking for learn the Holly Qur’an with correct pronunciation, because the world is now a global village. Al-Qur’an Learning Center (A.L.C) is a complete Quran Learning Center for all Muslim kids and adults. We started our journey from January 2014 at East New York Brooklyn New York U.S.A in a academic building. Our achievement is Alhmdulillah very good. So now we are starting online program. We can give you guaranty to learn Al-Qur’an with correct pronunciation inshaallah, because we have excellent course curriculum and expert male and female teachers. Also we have free time schedule for you 7 days or nights and any time in your choice. So no more late, please join with us.
+                  </p>
+                </div>
+
+                <div class="column is-1"></div>
+
+                <div class="column">
+                  <h3 class="subtitle">Our Programs</h3>
+                  
+                  <ol>
+                    <li>Children Qur’an Learning program</li>
+
+                    <li>Adult Qur’an Learning program</li>
+
+                    <li>Hefzul Qur’an program</li>
+
+                    <li>Arabic Language Learning program</li>
+
+                    <li>Arabic Grammar Learning program</li>
+                  </ol>
+
+
+                  <br>
+
+
+                  <h3 class="subtitle">Our Subject</h3>
+                  
+                  <ol>
+                    <li>Tasbid (rules of Qur’an recitation)</li>
+
+                    <li>Islamic Studies</li>
+
+                    <li>Masnon Dua’as</li>
+
+                    <li>Salah</li>
+
+                    <li>Memorize important Hadith and Qur’ans Ayah</li>
+                    
+                    <li>Important Mas’ala-Masaels</li>
+                  </ol>
+
+
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
 
 
-        <section class="hero is-light is-large">
+        <section class="hero is-danger">
           <div class="hero-body">
             <div class="container">
-              <h1 class="title">
-                Large title
-              </h1>
-              <h2 class="subtitle">
-                Large subtitle
-              </h2>
+              {% include 'components/index_carousel.html' %}
             </div>
           </div>
         </section>
