@@ -1,3 +1,9 @@
+body {
+    overflow:hidden;
+    overflow-x:hidden;
+    overflow-y:auto;
+}
+
 .nav {
     box-shadow: 0 4px 2px -2px #eeeeee;
     height:110px;
