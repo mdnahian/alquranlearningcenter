@@ -1,0 +1,22 @@
+{% include 'components/dash_head.html' %}
+
+
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-two-thirds">
+                {% include 'components/dash_next_session.html' %}
+                {% if current_user.account_type == 'teacher' %}
+                    {% include 'components/dash_schedule.html' %}
+                {% else %}
+                    {% include 'components/dash_homework.html' %}
+                {% endif %}
+            </div>
+
+            <div class="column">
+                {% include 'components/dash_announcements.html' %}
+                {% include 'components/dash_messages.html' %}
+            </div>
+        </div>
+    </div>
+</section>
