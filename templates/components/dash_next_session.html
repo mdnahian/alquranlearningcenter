@@ -1,0 +1,23 @@
+<section class="section no-lr">
+    <h3 class="title">
+        Next Session
+    </h3>
+
+    <article class="message">
+        <div class="message-body">
+            {% if next_session is not none %}
+                <strong>
+                    {{ next_session.user.fname }} {{ next_session.user.lname }}
+                </strong>
+                <br>
+                <i>{{ next_session.datetime }} for {{ next_session.duration }} hour(s)</i> 
+                <br><br>
+                <a href="call/{{ next_session.sid }}" class="button is-success is-fullwidth">START</a>
+            {% else %}
+                <h5 class="title is-5">
+                    nothing...
+                </h5>
+            {% endif %}
+        </div>
+    </article>
+</section>
