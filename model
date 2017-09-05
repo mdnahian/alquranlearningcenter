@@ -1,0 +1,71 @@
+Users [
+
+	
+	{
+		fname
+		lname
+		email
+
+				location {
+					city
+					state
+					zip
+					address
+				}
+
+				address_1
+				address_2
+				address_3
+
+		password
+
+		home_phone
+		cell_phone
+		age
+		gender
+		account_type
+		availability_time
+		availability_day
+
+		is_confirmed
+		is_suspended
+
+
+
+
+		**********************************STUDENT
+
+		
+		specifics {
+			grade
+			siblings_names [
+				{
+					fname
+					lname
+				}
+			]
+			father_name
+		}
+
+
+
+		***********************************TEACHER
+
+		specifics {
+			arabic_qualificaiton
+			general_qualification
+			teaching_experience {
+				place
+				years
+			}
+			spouse_name
+		}
+
+
+	}
+
+
+
+
+
+]

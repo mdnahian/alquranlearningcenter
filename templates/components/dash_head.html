@@ -2,10 +2,10 @@
   <div class="hero-body">
     <div class="container">
       <h1 class="title">
-        Dashboard ({{ current_user.account_type }})
+        Welcome, {{ current_user.fname }}
       </h1>
       <h2 class="subtitle">
-        Welcome, {{ current_user.fname }}
+        {{ current_user.accountType.title() }} Dashboard
       </h2>
     </div>
   </div>

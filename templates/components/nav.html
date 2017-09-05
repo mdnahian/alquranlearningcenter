@@ -21,14 +21,14 @@
               <!-- This "nav-menu" is hidden on mobile -->
               <!-- Add the modifier "is-active" to display it on mobile -->
               <div class="nav-right nav-menu">
-              {% if current_user.is_authenticated %}
-                <a class="nav-item" href="{{ url_for('account') }}">
+              {% if current_user is not none %}
+                <a class="nav-item" href="{{ url_for('dashboard.account') }}">
                   My Account
                 </a>
                 <span class="nav-item">
                   /
                 </span>
-                <a class="nav-item" href="{{ url_for('logout') }}">
+                <a class="nav-item" href="{{ url_for('dashboard.logout') }}">
                   Sign Out
                 </a>
               {% else %}

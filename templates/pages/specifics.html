@@ -1,0 +1,165 @@
+<section class="hero is-light">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title">
+        Welcome, {{ current_user.fname }}
+      </h1>
+      <h2 class="subtitle">
+        Before you get started, we will need some additional information.
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+<div class="container">
+
+  <div id="status"></div>
+
+  {% if current_user.accountType == 'student' %}
+  
+    <div class="section-sm">
+        <h1 class="title">What grade are you in?</h1>
+        <div class="field">
+            <p class="control">
+                <span class="select is-large is-fullwidth">
+                    <select id="grade">
+                        <option value="k">Kindergarten</option>
+                        <option value="1">1st Grade</option>
+                        <option value="2">2nd Grade</option>
+                        <option value="3">3rd Grade</option>
+                        <option value="4">4th Grade</option>
+                        <option value="5">5th Grade</option>
+                        <option value="6">6th Grade</option>
+                        <option value="7">7th Grade</option>
+                        <option value="8">8th Grade</option>
+                        <option value="9">9th Grade</option>
+                        <option value="10">10th Grade</option>
+                        <option value="11">11th Grade</option>
+                        <option value="12">12th Grade</option>
+                        <option value="13">Undergraduate (College)</option>
+                        <option value="14">Graduated (College)</option>
+                        <option value="14">None</option>
+                    </select>
+                </span>
+            </p>
+        </div>
+    </div>
+
+
+    <div class="section-sm">
+        <h1 class="title">What is your father's name?</h1>
+        <div class="field">
+            <p class="control">
+                <input id="fatherName" class="input is-fullwidth is-large" type="text" placeholder="John Doe">
+            </p>
+        </div>
+    </div>
+
+
+    <div class="section-sm">
+        <h1 class="title">What are the names of all your siblings?</h1>
+        <div class="field">
+            <p class="control">
+                <textarea id="siblings" class="textarea is-large" placeholder="Jane Doe, Jerry Doe, Jacob Doe"></textarea>
+            </p>
+        </div>
+    </div>
+
+
+  {% else %}
+
+
+    <div class="section-sm">
+        <h1 class="title">Please describe your Arabic qualifications.</h1>
+        <div class="field">
+            <p class="control">
+                <textarea id="arabicQ" class="textarea is-large"></textarea>
+            </p>
+        </div>
+    </div>
+
+
+
+    <div class="section-sm">
+        <h1 class="title">Do you have any general qualifications?</h1>
+        <div class="field">
+            <p class="control">
+                <textarea id="generalQ" class="textarea is-large"></textarea>
+            </p>
+        </div>
+    </div>
+
+
+
+    <div class="section-sm">
+        <h1 class="title">Do you have any teaching experience?</h1>
+        <div class="field">
+            <p class="control">
+                <textarea id="teachingExp" class="textarea is-large"></textarea>
+            </p>
+        </div>
+    </div>
+
+
+    <div class="section-sm">
+        <h1 class="title">What is your spouse's name?</h1>
+        <div class="field">
+            <p class="control">
+                <input id="spouseName" class="input is-fullwidth is-large" type="text" placeholder="Jane Doe">
+            </p>
+        </div>
+    </div>
+
+
+{% endif %}
+
+
+  <a class="button redBtn is-large is-pulled-right" onclick="save()">SAVE</a>
+
+  <br><br><br><br>
+
+
+</div>
+
+
+
+<script type="text/javascript">
+  
+  function save(){
+    {% if current_user.accountType == 'student' %}
+      var specifics = {
+        grade: document.getElementById('grade').value,
+        fatherName: document.getElementById('fatherName').value,
+        siblings: document.getElementById('siblings').value
+      };
+    {% else %}
+      var specifics = {
+        arabicQ: document.getElementById('arabicQ').value,
+        generalQ: document.getElementById('generalQ').value,
+        teachingExp: document.getElementById('teachingExp').value,
+        spouseName: document.getElementById('spouseName').value
+      };
+    {% endif %}    
+
+
+    $.ajax ({
+        url: "{{ url_for('dashboard.specifics') }}",
+        type: "POST",
+        data: JSON.stringify(specifics),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(result){
+            console.log(result);
+            if(result.status == 'success'){
+                window.location.replace("{{ url_for('dashboard.web') }}")
+            } else {
+                document.getElementById('status').innerHTML = result.message;
+            }
+        }
+    });
+
+  }
+
+
+</script>

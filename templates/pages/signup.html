@@ -1,7 +1,88 @@
 <section class="section page">
 
     <div class="container">
+
+        <div id="status" class="has-text-centered"></div>
+
         <div class="columns">
+
+
+
+
+
+            <div class="column is-4">
+
+                <nav class="panel">
+                    <p class="panel-heading">
+                        Account Information
+                    </p>
+                    <div class="panel-body">
+                        <div class="field">
+                            <label class="label">First Name</label>
+                            <p class="control">
+                                <input id="fname" class="input is-fullwidth" type="text" placeholder="Jane">
+                            </p>
+                        </div>
+                        <div class="field">
+                            <label class="label">Last Name</label>
+                            <p class="control">
+                                <input id="lname" class="input is-fullwidth" type="text" placeholder="Doe">
+                            </p>
+                        </div>
+                        <div class="field">
+                            <label class="label">Cell Phone</label>
+                            <p class="control">
+                                <input id="cellPhone" class="input is-fullwidth" type="tel" placeholder="123-456-7890">
+                            </p>
+                        </div>
+                        <div class="field">
+                            <label class="label">Home Phone</label>
+                            <p class="control">
+                                <input id="homePhone" class="input is-fullwidth" type="tel" placeholder="123-456-7890">
+                            </p>
+                        </div>
+                        <div class="field">
+                            <label class="label">Email</label>
+                            <p class="control">
+                                <input id="email" class="input is-fullwidth" type="email" placeholder="you@email.com">
+                            </p>
+                        </div>
+                        <div class="field">
+                            <label class="label">Address</label>
+                            <p class="control">
+                                <input id="address1" class="input is-fullwidth" type="text" placeholder="123 Main Street">
+                            </p>
+                            <p class="control space-top">
+                                <input id="address2" class="input is-fullwidth" type="text" placeholder="Brooklyn, New York">
+                            </p>
+                            <p class="control space-top">
+                                <input id="address3" class="input is-fullwidth" type="text" placeholder="Apt. 13">
+                            </p>
+                        </div>
+                        <div class="field">
+                            <label class="label">Password</label>
+                            <p class="control">
+                                <input id="password" class="input is-fullwidth" type="password" placeholder="••••••••">
+                            </p>
+                        </div>
+                        <div class="field">
+                            <label class="label">Confirm Password</label>
+                            <p class="control">
+                                <input id="confirm" class="input is-fullwidth" type="password" placeholder="••••••••">
+                            </p>
+                        </div>
+                    </div>
+                </nav>
+                
+
+
+            </div>
+
+
+
+
+
+
 
             <div class="column">
                 <div class="section-sm">
@@ -9,24 +90,35 @@
                     <div class="field">
                         <p class="control">
                             <span class="select is-large is-fullwidth">
-                                <select>
-                                    <option>Student</option>
-                                    <option>Teacher</option>
+                                <select id="accountType">
+                                    <option value="student">Student</option>
+                                    <option value="teacher">Teacher</option>
                                 </select>
                             </span>
                         </p>
                     </div>
                 </div>
 
+
+
                 <div class="section-sm">
-                    <h1 class="title">What is your proficiency (level)?</h1>
+                    <h1 class="title">What is your age?</h1>
+                    <div class="field">
+                        <p class="control">
+                            <input id="age" class="input is-fullwidth is-large" type="number" placeholder="30" min="1" max="90">
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="section-sm">
+                    <h1 class="title">What is your gender?</h1>
                     <div class="field">
                         <p class="control">
                             <span class="select is-large is-fullwidth">
-                                <select>
-                                    <option>Beginner</option>
-                                    <option>Intermediate</option>
-                                    <option>Advanced</option>
+                                <select id="gender">
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
                                 </select>
                             </span>
                         </p>
@@ -35,41 +127,56 @@
 
 
                 <div class="section-sm">
-                    <h1 class="title">What is your availability?</h1>
+                    <h1 class="title">What is your availability (Time)?</h1>
+                    <div class="field">
+                        <p class="control">
+                            <span class="select is-large is-fullwidth">
+                                <select id="availabilityTime">
+                                    <option value="morning">Morning</option>
+                                    <option value="afternoon">Afternoon</option>
+                                </select>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="section-sm">
+                    <h1 class="title">What is your availability (Day)?</h1>
                     <div class="field">
                         <div class="field is-grouped">
                           <p class="control">
-                            <a class="button">
+                            <a class="button" onclick="addDay(this, 'monday')">
                               Monday
                             </a>
                           </p>
                           <p class="control">
-                            <a class="button">
+                            <a class="button" onclick="addDay(this, 'tuesday')">
                               Tuesday
                             </a>
                           </p>
                           <p class="control">
-                            <a class="button">
+                            <a class="button" onclick="addDay(this, 'wednesday')">
                               Wednesday
                             </a>
                           </p>
                             <p class="control">
-                            <a class="button">
+                            <a class="button" onclick="addDay(this, 'thursday')">
                               Thursday
                             </a>
                           </p>
                             <p class="control">
-                            <a class="button">
+                            <a class="button" onclick="addDay(this, 'friday')">
                               Friday
                             </a>
                           </p>
                             <p class="control">
-                            <a class="button">
+                            <a class="button" onclick="addDay(this, 'saturday')">
                               Saturday
                             </a>
                           </p>
                              <p class="control">
-                            <a class="button">
+                            <a class="button" onclick="addDay(this, 'sunday')">
                               Sunday
                             </a>
                           </p>
@@ -79,56 +186,98 @@
             </div>
 
 
-            <div class="column is-4">
-
-                <form action="/signup" method="POST">
-                    <nav class="panel">
-                        <p class="panel-heading">
-                            Sign Up
-                        </p>
-                        <div class="panel-body">
-                            <div class="field">
-                                <label class="label">First Name</label>
-                                <p class="control">
-                                    <input class="input is-fullwidth" type="text" placeholder="Jane">
-                                </p>
-                            </div>
-                            <div class="field">
-                                <label class="label">Last Name</label>
-                                <p class="control">
-                                    <input class="input is-fullwidth" type="text" placeholder="Doe">
-                                </p>
-                            </div>
-                            <div class="field">
-                                <label class="label">Email</label>
-                                <p class="control">
-                                    <input class="input is-fullwidth" type="email" placeholder="you@email.com">
-                                </p>
-                            </div>
-                            <div class="field">
-                                <label class="label">Password</label>
-                                <p class="control">
-                                    <input class="input is-fullwidth" type="password" placeholder="••••••••">
-                                </p>
-                            </div>
-                            <div class="field">
-                                <label class="label">Confirm Password</label>
-                                <p class="control">
-                                    <input class="input is-fullwidth" type="password" placeholder="••••••••">
-                                </p>
-                            </div>
-                            <div class="field">
-                                <a class="button redBtn is-fullwidth">SIGN UP</a>
-                            </div>
-                        </div>
-                    </nav>
-                </form>
-
-
-            </div>
+            
 
 
         </div>
+
+
+        <a class="button redBtn is-large is-pulled-right" onclick="signup()">SIGN UP</a>
     </div>
 
 </section>
+
+
+<script type="text/javascript">
+
+    var days = [];
+    
+    function signup(){
+        var fname = document.getElementById('fname').value;
+        var lname = document.getElementById('lname').value;
+        var cellPhone = document.getElementById('cellPhone').value;
+        var homePhone = document.getElementById('homePhone').value;
+        var email = document.getElementById('email').value;
+        var address1 = document.getElementById('address1').value;
+        var address2 = document.getElementById('address2').value;
+        var address3 = document.getElementById('address3').value;
+        var password = document.getElementById('password').value;
+        var confirm = document.getElementById('confirm').value;
+
+
+        var accountType = document.getElementById('accountType').value;
+        var age = document.getElementById('age').value;
+        var gender = document.getElementById('gender').value;
+        var availabilityTime = document.getElementById('availabilityTime').value;
+
+
+        if(password == confirm){
+
+            $.ajax ({
+                url: "{{ url_for('landing_page.signup') }}",
+                type: "POST",
+                data: JSON.stringify({
+                    fname: fname,
+                    lname: lname,
+                    cellPhone: cellPhone,
+                    homePhone: homePhone,
+                    email: email,
+                    address1: address1,
+                    address2: address2,
+                    address3: address3,
+                    password: password,
+                    confirm: confirm,
+                    accountType: accountType,
+                    age: age,
+                    gender: gender,
+                    availabilityTime: availabilityTime,
+                    availabilityDay: days
+                }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function(result){
+                    console.log(result);
+                    if(result.status == 'success'){
+                        window.location.replace("{{ url_for('landing_page.success', email='') }}"+email)
+                    } else {
+                        document.getElementById('status').innerHTML = result.message;
+                    }
+                }
+            });
+        } else {
+            document.getElementById('status').innerHTML = 'Passwords do not match.';
+        }
+    }
+
+
+    function addDay(btn, day){
+        var isSelected = false;
+        var num = 0;
+        for(var i=0; i<days.length; i++){
+            if(days[i] == day){
+                isSelected = true;
+                num = i;
+                break;
+            }
+        }
+
+        if(isSelected){
+            $(btn).removeClass("is-info");
+            days.splice(num, 1);
+        } else {
+            $(btn).addClass("is-info");
+            days.push(day);
+        }
+    }
+
+</script>
