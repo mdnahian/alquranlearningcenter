@@ -220,44 +220,51 @@
         var gender = document.getElementById('gender').value;
         var availabilityTime = document.getElementById('availabilityTime').value;
 
+        if(checkInputs([fname, lname, cellPhone, email, address1, password, confirm, accountType,
+            age, gender, availabilityTime])){
 
-        if(password == confirm){
 
-            $.ajax ({
-                url: "{{ url_for('landing_page.signup') }}",
-                type: "POST",
-                data: JSON.stringify({
-                    fname: fname,
-                    lname: lname,
-                    cellPhone: cellPhone,
-                    homePhone: homePhone,
-                    email: email,
-                    address1: address1,
-                    address2: address2,
-                    address3: address3,
-                    password: password,
-                    confirm: confirm,
-                    accountType: accountType,
-                    age: age,
-                    gender: gender,
-                    availabilityTime: availabilityTime,
-                    availabilityDay: days
-                }),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function(result){
-                    console.log(result);
-                    if(result.status == 'success'){
-                        window.location.replace("{{ url_for('landing_page.success', email='') }}"+email)
-                    } else {
-                        document.getElementById('status').innerHTML = result.message;
+            if(password == confirm){
+
+                $.ajax ({
+                    url: "{{ url_for('landing_page.signup') }}",
+                    type: "POST",
+                    data: JSON.stringify({
+                        fname: fname,
+                        lname: lname,
+                        cellPhone: cellPhone,
+                        homePhone: homePhone,
+                        email: email,
+                        address1: address1,
+                        address2: address2,
+                        address3: address3,
+                        password: password,
+                        confirm: confirm,
+                        accountType: accountType,
+                        age: age,
+                        gender: gender,
+                        availabilityTime: availabilityTime,
+                        availabilityDay: days
+                    }),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function(result){
+                        console.log(result);
+                        if(result.status == 'success'){
+                            window.location.replace("{{ url_for('landing_page.success', email='') }}"+email)
+                        } else {
+                            document.getElementById('status').innerHTML = result.message;
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                document.getElementById('status').innerHTML = 'Passwords do not match.';
+            }
         } else {
-            document.getElementById('status').innerHTML = 'Passwords do not match.';
+            document.getElementById('status').innerHTML = 'Please fill all fields.';
         }
     }
+
 
 
     function addDay(btn, day){

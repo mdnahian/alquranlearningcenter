@@ -10,7 +10,7 @@ landing_page = Blueprint('landing_page', __name__,  template_folder='../template
 def index():
     if g.isLoggedIn():
         return redirect('/web')
-    return render_template('template.html', page='index.html', current_user=None)
+    return render_template('template.html', page='index.html', current_user=None, num_teachers=14, num_students=52)
 
 
 @landing_page.route('/login', methods=['GET', 'POST'])

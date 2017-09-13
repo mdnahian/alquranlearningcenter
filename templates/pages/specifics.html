@@ -127,12 +127,18 @@
 <script type="text/javascript">
   
   function save(){
+    var isReady = false;
     {% if current_user.accountType == 'student' %}
       var specifics = {
         grade: document.getElementById('grade').value,
         fatherName: document.getElementById('fatherName').value,
         siblings: document.getElementById('siblings').value
       };
+
+      if(checkInputs([specifics.grade, specifics.fatherName])){
+        isReady = true;
+      }
+
     {% else %}
       var specifics = {
         arabicQ: document.getElementById('arabicQ').value,
@@ -140,24 +146,35 @@
         teachingExp: document.getElementById('teachingExp').value,
         spouseName: document.getElementById('spouseName').value
       };
+
+      if(checkInputs([specifics.arabicQ, specifics.generalQ, teachingExp])){
+        isReady = true;
+      }
+
+
     {% endif %}    
 
 
-    $.ajax ({
-        url: "{{ url_for('dashboard.specifics') }}",
-        type: "POST",
-        data: JSON.stringify(specifics),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function(result){
-            console.log(result);
-            if(result.status == 'success'){
-                window.location.replace("{{ url_for('dashboard.web') }}")
-            } else {
-                document.getElementById('status').innerHTML = result.message;
+    if(isReady){
+
+        $.ajax ({
+            url: "{{ url_for('dashboard.specifics') }}",
+            type: "POST",
+            data: JSON.stringify(specifics),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function(result){
+                console.log(result);
+                if(result.status == 'success'){
+                    window.location.replace("{{ url_for('dashboard.web') }}")
+                } else {
+                    document.getElementById('status').innerHTML = result.message;
+                }
             }
-        }
-    });
+        });
+    } else {
+        document.getElementById('status').innerHTML = "Please fill all fields.";
+    }
 
   }
 
