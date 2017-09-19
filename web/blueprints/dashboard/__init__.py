@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, url_for, redirect
-from blueprints import g
-from LinxUser import User
+from web.blueprints import g
+from web.LinxUser import User
 import json
 
 

@@ -1,7 +1,7 @@
 from flask import Flask, session, url_for
-from blueprints.landing import landing_page
-from blueprints.dashboard import dashboard
-from blueprints import g
+from web.blueprints.landing import landing_page
+from web.blueprints.dashboard import dashboard
+from web.blueprints import g
 from flask_pymongo import PyMongo
 from flask_bcrypt import Bcrypt
 from flask_socketio import SocketIO

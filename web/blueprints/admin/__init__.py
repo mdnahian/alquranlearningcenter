@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template, url_for, redirect
-from blueprints import g
+from web.blueprints import g
 import json
 
 

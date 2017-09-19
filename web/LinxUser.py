@@ -1,4 +1,4 @@
-from blueprints import g
+from web.blueprints import g
 import random
 import string
 
