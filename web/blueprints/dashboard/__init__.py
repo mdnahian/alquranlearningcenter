@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, url_for, redirect
 from web.blueprints import g
-from web.LinxUser import User
+from web.User import User
 import json
 
 
@@ -40,6 +40,25 @@ def specifics():
 		g.current_user = user
 		return g.success_msg({'email': g.session['user']['email']})
 	return render_template('template.html', page='specifics.html', current_user=g.session['user'])
+
+
+@dashboard.route('/call')
+def call():
+	if g.isLoggedIn() is False:
+		return redirect(url_for('landing_page.index'))
+	if g.session['user']['accountType'] == 'teacher':
+		return render_template('template.html', page='call_teacher.html', current_user=g.session['user'])
+	elif g.session['user']['accountType'] == 'student':
+		return render_template('template.html', page='call_student.html', current_user=g.session['user'])
+	# if 'sessions' in g.session['user']:
+	# 	pass
+	# else:
+	# 	pass
+
+
+@g.socketio.on('enter')
+def on_enter(enter):
+    g.socketio.emit('new_user', enter)
 
 
 @dashboard.route('/logout')
