@@ -6,9 +6,11 @@ import json
 
 dashboard = Blueprint('dashboard', __name__, url_prefix='/web', template_folder='../templates', static_folder='../static')
 
+#socketio = g.socketio
 
 @dashboard.route('/')
 def web():
+	print g
 	if g.isLoggedIn() is False:
 		return redirect(url_for('landing_page.index'))
 	if 'specifics' in g.session['user']:
@@ -56,9 +58,9 @@ def call():
 	# 	pass
 
 
-@g.socketio.on('enter')
-def on_enter(enter):
-    g.socketio.emit('new_user', enter)
+#@socketio.on('enter')
+#def on_enter(enter):
+#    socketio.emit('new_user', enter)
 
 
 @dashboard.route('/logout')

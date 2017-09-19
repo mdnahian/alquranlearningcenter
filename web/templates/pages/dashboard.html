@@ -14,8 +14,9 @@
             </div>
 
             <div class="column">
-                <a href="{{url_for('dashboard.call')}}">
-                {% include 'components/dash_announcements.html' %}
+                <a class="is-success button is-fullwidth is-medium" href="{{url_for('dashboard.call')}}">Start Call</a>
+                <br>
+		{% include 'components/dash_announcements.html' %}
                 {% include 'components/dash_messages.html' %}
             </div>
         </div>

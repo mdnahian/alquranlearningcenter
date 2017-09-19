@@ -1,0 +1,125 @@
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+	var socket = io.connect('http://' + document.domain + ':' + location.port);
+    socket.on('connect', function() {
+        socket.emit('enter', '{{ current_user.fname }} {{ current_user.lname }}');
+    });
+    socket.on('new_user', function(user) {
+    	addUser(user);
+    });
+
+
+	var inRoom = [];
+    
+    function addUser(user){
+    	var exists = false;
+    	for(var i=0; i<inRoom.length; i++){
+    		if(inRoom[i] == user){
+    			exists = true;
+    		}
+    	}
+    	if(!exists){
+    		inRoom.push(user);
+    		for(var i=0; i<inRoom.length; i++){
+    			document.getElementById('inRoom').innerHTML += '<div class="panel-body">'+user+'</div>';
+    		}
+    	}
+    }
+
+    function removeUser(user){
+
+    }
+
+    // function updatePages(top, resource){
+    // 	socket.emit('resource')
+    // }
+
+
+    // setInterval(function(){ 
+    // 	var top = document.getElementById('page-indicator').style.top;
+    // 	updatePages()
+    // }, 500);
+    
+</script>
+
+<div class="container page-sm">
+  <div class="columns">
+      <div class="column is-2">
+      	<aside class="menu">
+		  <p class="menu-label">
+		    Resources
+		  </p>
+		  <ul class="menu-list">
+		  <li><a onclick="setResource('{{url_for('static', filename='resources/textbook/textbook0.pdf')}}#zoom=60')">Kaidah</a></li>
+		    <li><a onclick="setResource('{{url_for('static', filename='resources/quran/para11.pdf')}}#zoom=60')">Quran</a></li>
+		    <li><a onclick="setResource('{{url_for('static', filename='resources/duaas/duaas0.pdf')}}#zoom=60')">Dua'as</a></li>
+		    <li><a onclick="setResource('{{url_for('static', filename='resources/islamic-studies/islamic-studies0.pdf')}}#zoom=60')">Islamic Studies</a></li>
+		  </ul>
+		  <p class="menu-label">
+		    Tools
+		  </p>
+		  <ul class="menu-list">
+		    <li><a>Notebook</a></li>
+		    <li><a>Sketchpad</a></li>
+		    <li><a>Homework</a></li>
+		  </ul>
+		  <p class="menu-label">
+		    Miscellaneous
+		  </p>
+		  <ul class="menu-list">
+		    <li><a></a></li>
+		    <li><a></a></li>
+		    <li><a></a></li>
+		  </ul>
+		</aside>
+		<script type="text/javascript">
+			function setResource(r){
+				document.getElementById('resource').data = r;
+				document.getElementById('pages').innerHTML = '';
+				var xhttp = new XMLHttpRequest();
+				    xhttp.onreadystatechange = function() {
+					if (this.readyState === 4 && this.status === 200) {
+					    var response = JSON.parse(this.responseText);
+					    if(response.status !== "error"){
+						var pages = response.responses;
+						for(var i=0; i<pages.length; i++){
+							document.getElementById('pages').innerHTML += '<a href="'+pages[i].location+'">Page '+i+'</a><br>';
+						}
+					    } else {
+						console.log(response);	
+					    }
+					}
+				    };
+				    xhttp.open("POST", "{{ url_for('dashboard.load_pages') }}", true);
+				    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				    xhttp.send("resource="+r);
+			}
+		</script>
+
+      </div>
+
+      <div class="column">
+      	<object id="resource" class="resource" type="application/pdf" data="{{url_for('static', filename='resources/textbook/textbook0.pdf')}}#zoom=60"></object>
+       </div>
+
+
+      <div class="column is-one-quarter">
+        <div id="pages" class="pages-column"></div>
+      </div>
+
+      
+  </div>
+</div>
+
+
+<div id="bottomRight" style="position:fixed; bottom:16px; right:16px">
+  <div class="box">
+    <h3 class="subtitle">In Room</h3>
+
+    <div id="inRoom" class="pannel"></div><br>
+
+    <button class="button is-danger is-fullwidth" onclick="window.location.replace('/')">
+      END SESSION
+    </button>
+  </div>
+</div>
