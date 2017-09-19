@@ -5,7 +5,7 @@ from web.blueprints import g
 from flask_pymongo import PyMongo
 from flask_bcrypt import Bcrypt
 from flask_socketio import SocketIO
-from LinxUser import User
+from User import User
 import os
 
 
