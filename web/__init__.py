@@ -19,6 +19,18 @@ mongo = PyMongo(app)
 socketio = SocketIO(app)
 
 
+@socketio.on('enter')
+def on_enter(enter):
+    socketio.emit('new_user', enter)
+
+@socketio.on('remove')
+def on_remove(remove):
+    socketio.emit('remove_user', remove)
+
+@socketio.on('resource')
+def on_resource(resource):
+    socketio.emit('new_resource', resource)
+
 
 
 @app.context_processor
@@ -39,7 +51,6 @@ def dated_url_for(endpoint, **values):
 def before_request():
     g.mongo = mongo
     g.bcrypt = bcrypt
-    g.socketio = socketio
     g.session = session
 
 

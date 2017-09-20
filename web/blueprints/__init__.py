@@ -7,7 +7,6 @@ class g:
     def __init__(self):
         self.mongo = None
         self.bcrypt = None
-        self.socketio = None
         self.session = None
         self.current_user = None
 

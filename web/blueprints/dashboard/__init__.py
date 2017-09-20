@@ -2,11 +2,10 @@ from flask import Blueprint, request, render_template, url_for, redirect
 from web.blueprints import g
 from web.User import User
 import json
-
+import os
+import re
 
 dashboard = Blueprint('dashboard', __name__, url_prefix='/web', template_folder='../templates', static_folder='../static')
-
-#socketio = g.socketio
 
 @dashboard.route('/')
 def web():
@@ -58,10 +57,29 @@ def call():
 	# 	pass
 
 
-#@socketio.on('enter')
-#def on_enter(enter):
-#    socketio.emit('new_user', enter)
 
+def sortby(x):
+    try:
+	num = int(re.search(r'\d+', x).group())
+	#print num
+        return num
+    except ValueError:
+        return float('inf')
+
+
+@dashboard.route('load_pages', methods=['POST'])
+def load_pages():
+	if request.method == 'POST':
+		resource = request.form['resource']
+		resource = re.sub('[\?].+', '', resource)
+		static_dir = os.path.dirname(resource)
+		directory = '/var/www/alquranlearningcenter/app/web' + static_dir
+		files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+		files.sort(key=sortby)
+		for i in range(0, len(files)):
+			files[i] = static_dir + '/' + files[i]
+		return g.success_msg(files)
+	return g.error_msg('failed to load')
 
 @dashboard.route('/logout')
 def logout():

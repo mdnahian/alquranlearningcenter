@@ -1,11 +1,28 @@
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
 <script type="text/javascript" charset="utf-8">
 	var socket = io.connect('http://' + document.domain + ':' + location.port);
+	var sessionId = '{{ current_user.session[0].session_id  }}'	
+
     socket.on('connect', function() {
-        socket.emit('enter', '{{ current_user.fname }} {{ current_user.lname }}');
+        socket.emit('enter', {"name": "{{ current_user.fname }} {{ current_user.lname }}", "sessionId": sessionId});
     });
     socket.on('new_user', function(user) {
-    	addUser(user);
+	var r = user;
+	if(r.sessionId == sessionId){
+    		addUser(r.name);
+	}
+    });
+    socket.on('remove_user', function(user) {
+	var r = user;
+        if(r.sessionId == sessionId){
+                removeUser(r.name);
+        }
+    });
+    socket.on('new_resource', function(resource) {
+        var r = resource;
+	if(r.sessionId == sessionId){
+        	setResource(r.resource, r.page, r.load);
+	}
     });
 
 
@@ -27,7 +44,26 @@
     }
 
     function removeUser(user){
+	for(var i=0; i<inRoom.length; i++){
+                if(inRoom[i] == user){
+                        var ppl = document.getElementById('inRoom').getElementsByClassName('panel-body');
+			for(var j=0; j<ppl.length; j++){
+				if(ppl[i].innerHTML.trim() == user.trim()){
+					ppl[i].parentElement.removeChild(ppl[i]);
+					break;
+				}
+			}
+			break;
+                }
+        }
 
+    }
+
+    function updateResource(resource, page, load){
+	var accountType = '{{ current_user.accountType  }}';
+	if(accountType == 'teacher'){
+		socket.emit('resource', {"sessionId": sessionId, "resource": resource, "page": page, "load": load});
+	}
     }
 
     // function updatePages(top, resource){
@@ -50,10 +86,10 @@
 		    Resources
 		  </p>
 		  <ul class="menu-list">
-		  <li><a onclick="setResource('{{url_for('static', filename='resources/textbook/textbook0.pdf')}}#zoom=60')">Kaidah</a></li>
-		    <li><a onclick="setResource('{{url_for('static', filename='resources/quran/para11.pdf')}}#zoom=60')">Quran</a></li>
-		    <li><a onclick="setResource('{{url_for('static', filename='resources/duaas/duaas0.pdf')}}#zoom=60')">Dua'as</a></li>
-		    <li><a onclick="setResource('{{url_for('static', filename='resources/islamic-studies/islamic-studies0.pdf')}}#zoom=60')">Islamic Studies</a></li>
+		  <li><a onclick="setResource('{{url_for('static', filename='resources/textbook/textbook0.pdf')}}#zoom=60', 1, true)">Kaidah</a></li>
+		    <li><a onclick="setResource('{{url_for('static', filename='resources/quran/page0.pdf')}}#zoom=60', 1, true)">Quran</a></li>
+		    <li><a onclick="setResource('{{url_for('static', filename='resources/duaas/duaas0.pdf')}}#zoom=60', 1, true)">Dua'as</a></li>
+		    <li><a onclick="setResource('{{url_for('static', filename='resources/islamic-studies/islamic-studies0.pdf')}}#zoom=60', 1, true)">Islamic Studies</a></li>
 		  </ul>
 		  <p class="menu-label">
 		    Tools
@@ -73,38 +109,55 @@
 		  </ul>
 		</aside>
 		<script type="text/javascript">
-			function setResource(r){
+			function setResource(r, p, load){
+				updateResource(r, p, load);
 				document.getElementById('resource').data = r;
-				document.getElementById('pages').innerHTML = '';
-				var xhttp = new XMLHttpRequest();
-				    xhttp.onreadystatechange = function() {
-					if (this.readyState === 4 && this.status === 200) {
-					    var response = JSON.parse(this.responseText);
-					    if(response.status !== "error"){
-						var pages = response.responses;
-						for(var i=0; i<pages.length; i++){
-							document.getElementById('pages').innerHTML += '<a href="'+pages[i].location+'">Page '+i+'</a><br>';
+				document.getElementById('currentPage').innerHTML = p;
+				if(load){
+					document.getElementById('pages').innerHTML = '';
+					var xhttp = new XMLHttpRequest();
+					    xhttp.onreadystatechange = function() {
+						if (this.readyState === 4 && this.status === 200) {
+						    var response = JSON.parse(this.responseText);
+						    if(response.status !== "error"){
+							var pages = response.response;
+							for(var i=0; i<pages.length; i++){
+								var pageNum = i+1;
+								document.getElementById('pages').innerHTML += '<li><a onclick="setResource(\''+pages[i]+'#zoom=60\', '+pageNum+', false)">Page '+pageNum+'</a></li>';
+								document.getElementById('pages').style.height = document.getElementById('resource').style.height;
+							}
+						    } else {
+							console.log(response);	
+						    }
 						}
-					    } else {
-						console.log(response);	
-					    }
-					}
-				    };
-				    xhttp.open("POST", "{{ url_for('dashboard.load_pages') }}", true);
-				    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				    xhttp.send("resource="+r);
+					    };
+					    xhttp.open("POST", "{{ url_for('dashboard.load_pages') }}", true);
+					    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+					    xhttp.send("resource="+r);
+				}
 			}
 		</script>
 
       </div>
 
       <div class="column">
-      	<object id="resource" class="resource" type="application/pdf" data="{{url_for('static', filename='resources/textbook/textbook0.pdf')}}#zoom=60"></object>
+      	<object id="resource" class="resource" type="application/pdf"></object>
        </div>
-
+	
+	<script>
+		window.onload = function () {
+			setResource('{{url_for('static', filename='resources/textbook/textbook0.pdf')}}#zoom=60', 1, true);
+		};
+		window.unload = function() {
+			socket.emit('remove', {"sessionId": sessionId, "name": "{{ current_user.fname }} {{ current_user.lname }}"});
+		};
+	</script>
 
       <div class="column is-one-quarter">
-        <div id="pages" class="pages-column"></div>
+	<aside class="menu">
+		<p class="menu-label">Pages (Current Page: <span id="currentPage">0</span>)</p>
+        	<ul id="pages" class="menu-list"></ul>
+        </aside>
       </div>
 
       
