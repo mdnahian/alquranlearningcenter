@@ -8,12 +8,14 @@
     });
     socket.on('new_user', function(user) {
 	var r = user;
+	console.log(r);
 	if(r.sessionId == sessionId){
     		addUser(r.name);
 	}
     });
     socket.on('remove_user', function(user) {
 	var r = user;
+	console.log(r)
         if(r.sessionId == sessionId){
                 removeUser(r.name);
         }
@@ -35,12 +37,19 @@
     			exists = true;
     		}
     	}
+	
     	if(!exists){
-    		inRoom.push(user);
-    		for(var i=0; i<inRoom.length; i++){
-    			document.getElementById('inRoom').innerHTML += '<div class="panel-body">'+user+'</div>';
-    		}
+    		inRoom.push(user);	
     	}
+	
+	inRoom = inRoom.filter( function( item, index, inputArray ) {
+        	return inputArray.indexOf(item) == index;
+        });
+	document.getElementById('inRoom').innerHTML = ''; 
+	for(var i=0; i<inRoom.length; i++){
+		document.getElementById('inRoom').innerHTML += '<div class="panel-body">'+user+'</div>';
+        }
+
     }
 
     function removeUser(user){
@@ -66,15 +75,16 @@
 	}
     }
 
-    // function updatePages(top, resource){
-    // 	socket.emit('resource')
-    // }
 
-
-    // setInterval(function(){ 
-    // 	var top = document.getElementById('page-indicator').style.top;
-    // 	updatePages()
-    // }, 500);
+    setInterval(function() {
+	var accountType = '{{current_user.accountType}}';
+	if(accountType == 'teacher' && inRoom.length <= 1){
+		socket.emit('enter', {"name": "{{ current_user.fname }} {{ current_user.lname }}", "sessionId": sessionId});
+	} else if(accountType == 'student' && inRoom.length < 2){
+		socket.emit('enter', {"name": "{{ current_user.fname }} {{ current_user.lname }}", "sessionId": sessionId});
+	}
+    }, 5000);
+   
     
 </script>
 

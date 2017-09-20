@@ -10,12 +10,13 @@ def quran_downloader():
 
 
 def split_quran():
+	count = 0
 	for i in range(1, 31):
-		name = "para"+str(i)+"-page"
+		name = "page"
 		pdffile = "../web/static/resources/quran/paras/para-"+str(i)+".pdf"
 		outputfolder = "../web/static/resources/quran/"
 
-		pdfsplitter.split_pdf(name, pdffile, outputfolder)
+		count = pdfsplitter.split_pdf(name, pdffile, outputfolder, count)
 
 
 split_quran()
