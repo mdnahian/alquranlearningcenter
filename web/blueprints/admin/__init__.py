@@ -1,8 +1,15 @@
 from flask import Blueprint, request, render_template, url_for, redirect
 from web.blueprints import g
+from opentok import OpenTok
 
 
 admin = Blueprint('admin', __name__, url_prefix='/admin', template_folder='../templates', static_folder='../static')
+
+
+API_KEY = '45966672'
+API_SECRET = '728a640798d19162ed49d02ebd5a6153446b8421'
+
+opentok = OpenTok(API_KEY, API_SECRET)
 
 
 def check_admin():
@@ -20,10 +27,15 @@ def session():
         day = request.form['day']
         time_start = request.form['time_start']
         time_end = request.form['time_end']
-        id = g.generate_random()
+
+        s = opentok.create_session()
+        id = s.session_id
+        token = opentok.generate_token(id)
+
 
         g.mongo.db.alquranlearningcenter.users.update_one({"email": teacher}, {'$push': {"session": {
             "session_id": id,
+            "token": token,
             "day": day,
             "time_start": time_start,
             "time_end": time_end
@@ -31,6 +43,7 @@ def session():
 
         g.mongo.db.alquranlearningcenter.users.update_one({"email": student}, {'$push': {"session": {
             "session_id": id,
+            "token": token,
             "day": day,
             "time_start": time_start,
             "time_end": time_end

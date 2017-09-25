@@ -1,7 +1,5 @@
 from flask import Blueprint, request, render_template, url_for, redirect
 from web.blueprints import g
-from web.User import User
-import json
 import os
 import re
 
