@@ -181,7 +181,7 @@
 
     <div id="inRoom" class="pannel"></div><br>
 	
-    <iframe style="position:absolute; z-index:-5000;  opacity:0;" src="https://alquranlearningcenter.herokuapp.com/room/{{ current_user.session[0].sessionId }}"></iframe> 
+    <iframe style="position:absolute; z-index:-5000;  opacity:0;" src="https://alquranlearningcenter.herokuapp.com/room/{{ current_user.session[0].session_id }}"></iframe> 
 
     <button class="button is-danger is-fullwidth" onclick="window.location.replace('/')">
       END SESSION

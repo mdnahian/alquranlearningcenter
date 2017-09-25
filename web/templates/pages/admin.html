@@ -1,0 +1,156 @@
+{% include 'components/dash_head.html' %}
+
+
+<section class="section">
+    <div class="container">
+        <h1 class="title">Edit Session</h1>
+
+
+        <form action="{{ url_for('admin.session') }}" method="POST">
+
+            <div class="field">
+                <label class="label">Teacher</label>
+                <div class="control">
+                    <div class="select">
+                        <select name="teacher">
+                            <option value="">None</option>
+                            {% for teacher in teachers %}
+                            	<option value="{{ teacher.email }}">{{ teacher.fname }} {{ teacher.lname }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Student</label>
+                <div class="control">
+                    <div class="select">
+                        <select name="student">
+                            <option value="">None</option>
+                            {% for student in students %}
+                            	<option value="{{ student.email }}">{{ student.fname }} {{ student.lname }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <label class="radio">
+                        <input type="radio" name="day" value="Monday">
+                        Monday
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="day" value="Tuesday">
+                        Tuesday
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="day" value="Wednesday">
+                        Wednesday
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="day" value="Thursday">
+                        Thursday
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="day" value="Friday">
+                        Friday
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="day" value="Saturday">
+                        Saturday
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="day" value="Sunday">
+                        Sunday
+                    </label>
+                </div>
+            </div>
+
+
+            <div class="field">
+                <label class="label">Time Start</label>
+                <div class="control">
+                    <input class="input" type="time" name="time_start">
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Time End</label>
+                <div class="control">
+                    <input class="input" type="time" name="time_end">
+                </div>
+            </div>
+
+            <input type="submit" class="button" value="Save">
+        </form>
+
+
+    </div>
+</section>
+
+
+<script type="text/javascript">
+    function removeSession(email, sessionId){
+        var xhttp = new XMLHttpRequest();
+					    xhttp.onreadystatechange = function() {
+						if (this.readyState === 4 && this.status === 200) {
+						    var response = JSON.parse(this.responseText);
+						    if(response.status !== "error"){
+							   location.reload();
+						    } else {
+							console.log(response);
+						    }
+						}
+					    };
+					    xhttp.open("POST", "{{ url_for('admin.remove_session') }}", true);
+					    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+					    xhttp.send("email="+email+"&session_id="+sessionId);
+    }
+
+</script>
+
+
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column">
+		<h3 class="subtitle">Teachers</h3>
+                {% for teacher in teachers %}
+			<div class="box">
+			    <strong>{{ teacher.fname }} {{ teacher.lname }}</strong> - {{ teacher.email }}<br>
+			    {% for session in teacher.session %}
+				    <div class="notification">
+					<button onclick="removeSession('{{ teacher.email }}', '{{ session.session_id }}')" class="delete"></button>
+					Session ID: <strong>{{ session.session_id }}</strong><br>
+					Day: <strong>{{ session.day }}</strong><br>
+					Start Time: <strong>{{ session.time_start }}</strong><br>
+					End Time: <strong>{{ session.time_end }}</strong><br>
+				    </div>
+			    {% endfor %}
+			</div>
+                {% endfor %}
+            </div>
+
+            <div class="column">
+		<h3 class="subtitle">Students</h3>
+                {% for student in students %}
+			<div class="box">
+			    <strong>{{ student.fname }} {{ student.lname }}</strong> - {{ student.email }}<br>
+			    {% for session in student.session %}
+				    <div class="notification">
+					<button onclick="removeSession('{{ student.email }}', '{{ session.session_id }}')" class="delete"></button>
+					Session ID: <strong>{{ session.session_id }}</strong><br>
+					Day: <strong>{{ session.day }}</strong><br>
+					Start Time: <strong>{{ session.time_start }}</strong><br>
+					End Time: <strong>{{ session.time_end }}</strong><br>
+				    </div>
+			    {% endfor %}
+			</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>

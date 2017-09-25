@@ -1,6 +1,7 @@
 from flask import Flask, session, url_for
 from web.blueprints.landing import landing_page
 from web.blueprints.dashboard import dashboard
+from web.blueprints.admin import admin
 from web.blueprints import g
 from flask_pymongo import PyMongo
 from flask_bcrypt import Bcrypt
@@ -14,6 +15,7 @@ app = Flask(__name__)
 app.secret_key = 'alquranlearningcenter'
 app.register_blueprint(landing_page)
 app.register_blueprint(dashboard)
+app.register_blueprint(admin)
 bcrypt = Bcrypt(app)
 mongo = PyMongo(app)
 socketio = SocketIO(app)

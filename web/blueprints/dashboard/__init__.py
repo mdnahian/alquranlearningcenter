@@ -12,6 +12,8 @@ def web():
 	print g
 	if g.isLoggedIn() is False:
 		return redirect(url_for('landing_page.index'))
+	if g.session['user']['accountType'] == 'admin':
+		return redirect(url_for('admin.panel'))
 	if 'specifics' in g.session['user']:
 		return render_template('template.html', page='dashboard.html', current_user=g.session['user'], next_session=None)
 	else:
