@@ -44,7 +44,7 @@ def web():
 						if 'session' in user:
 							for ss in user['session']:
 								if ss['session_id'] == session['session_id']:
-									s = session.copy()
+									s = ss.copy()
 									s['time_start'] = g.convert_time(s['time_start'])
                                                                         s['time_end'] = g.convert_time(s['time_end'])
                                                                         s['fname'] = user['fname']
@@ -59,12 +59,12 @@ def web():
 										time_start = g.to_server_time(session['time_start']).time()
 										time_end = g.to_server_time(session['time_end']).time()
 
-										print current_time
-										print time_start
-										print time_end
+										#print current_time
+										#print time_start
+										#print time_end
 										if current_time >= time_start and current_time <= time_end:
 											next_session = s
-	
+		print sessions	
 		return render_template('template.html', page='dashboard.html', current_user=g.session['user'], next_session=next_session, sessions=sessions, session_count=g.session['user']['session_count'])
 	else:
 		return redirect(url_for('dashboard.specifics'))
