@@ -42,6 +42,7 @@ def session():
         }}})
 
         g.mongo.db.alquranlearningcenter.users.update_one({"email": student}, {'$push': {"session": {
+            "session_count": 20,
             "session_id": id,
             "token": token,
             "day": day,
@@ -74,13 +75,22 @@ def panel():
     students = list(g.mongo.db.alquranlearningcenter.users.find({"accountType": "student"}))
 
     for teacher in teachers:
-	#print teacher
         if 'session' not in teacher:
 	    teacher['session'] = []
-            #g.mongo.db.alquranlearningcenter.users.update_one({"email": teacher['email']}, {'$set': {"sessions": []}})
+	else:	
+		for session in teacher['session']:
+			session['time_start'] = g.convert_time(session['time_start'])
+			session['time_end'] = g.convert_time(session['time_end'])
     for student in students:
-	#print student
-        if 'session' not in student:
+	student['paid'] = False
+	if 'last_paid' in student:
+            student['paid'] = g.check_date(student['last_paid'])
+	    student['last_paid'] = student['last_paid'].replace(' ', '/')
+        print student['paid']
+	if 'session' not in student:
 	    student['session'] = []
-            #g.mongo.db.alquranlearningcenter.users.update_one({"email": student['email']}, {'$set': {"sessions": []}})
+	else:	
+		for session in student['session']:
+                        session['time_start'] = g.convert_time(session['time_start'])
+                        session['time_end'] = g.convert_time(session['time_end'])
     return render_template('template.html', page='admin.html', current_user=g.session['user'], teachers=teachers, students=students)

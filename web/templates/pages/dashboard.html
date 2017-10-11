@@ -5,17 +5,14 @@
     <div class="container">
         <div class="columns">
             <div class="column is-two-thirds">
-                {% include 'components/dash_next_session.html' %}
-                {% if current_user.account_type == 'teacher' %}
-                    {% include 'components/dash_schedule.html' %}
-                {% else %}
+		{% include 'components/dash_schedule.html' %}
+                {% if current_user.accountType == 'student' %}
                     {% include 'components/dash_homework.html' %}
                 {% endif %}
             </div>
 
             <div class="column">
-                <a class="is-success button is-fullwidth is-medium" href="{{url_for('dashboard.call')}}">Start Call</a>
-                <br>
+		{% include 'components/dash_next_session.html' %}	
 		{% include 'components/dash_announcements.html' %}
                 {% include 'components/dash_messages.html' %}
             </div>

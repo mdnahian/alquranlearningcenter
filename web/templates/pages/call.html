@@ -16,7 +16,13 @@
         <div id="publisher"></div>
     </div>
 
-    <script type="text/javascript" src="{{ url_for('static', filename='js/config.js') }}"></script>
+    <script>
+	var SAMPLE_SERVER_BASE_URL = 'https://alquranlearningcenter.com';
+	var API_KEY = '{{ api_key }}';
+	var SESSION_ID = '{{ session_id }}';
+	var TOKEN = '{{ token }}';
+    </script>  
+
     <script type="text/javascript" src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 

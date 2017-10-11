@@ -7,12 +7,12 @@
         <div class="message-body">
             {% if next_session is not none %}
                 <strong>
-                    {{ next_session.user.fname }} {{ next_session.user.lname }}
+                    {{ next_session.fname }} {{ next_session.lname }}
                 </strong>
                 <br>
-                <i>{{ next_session.datetime }} for {{ next_session.duration }} hour(s)</i> 
+                <i>{{ next_session.time_start }} to {{ next_session.time_end }}</i> 
                 <br><br>
-                <a href="call/{{ next_session.sid }}" class="button is-success is-fullwidth">START</a>
+                <a href="{{ url_for('dashboard.call', session_id=next_session.session_id) }}" class="button is-success is-fullwidth">Start Call</a>
             {% else %}
                 <h5 class="title is-5">
                     nothing...

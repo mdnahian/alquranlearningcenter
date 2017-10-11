@@ -1,0 +1,142 @@
+{% if renew %}
+	<section class="hero is-light">
+	  <div class="hero-body">
+	    <div class="container">
+	      <h1 class="title">
+		Welcome, {{ current_user.fname }}
+	      </h1>
+	      <h2 class="subtitle">
+		You have used {{ session_count }} of your {{ current_user.total_sessions }} available sessions. Please renew your subscription below.
+	      </h2>
+	    </div>
+	  </div>
+	</section>
+{% endif %}
+
+<section class="section">
+	<div class="container">
+		<h3 class="title">Plans</h3><br>
+		<h5 class="subtitle">After School Program</h5>
+		<div class="columns">
+			<div class="column">
+				<div class="box">
+					<strong>Plan A - $160/month</strong><br>
+					Monday to Thursday<br>
+					4 days/week<br>
+					30 minute class<br>
+					1-on-1 teaching
+				</div>
+			</div>
+
+			<div class="column">
+				<div class="box">
+					<strong>Plan B - $100/month</strong><br>
+					Monday to Thursday<br>
+					4 days/week<br>
+					45 minute class<br>
+					4-on-1 teaching
+				</div>
+			</div>
+
+			<div class="column">
+				<div class="box">
+					<strong>Plan C - $100/month</strong><br>
+					Monday to Thursday<br>
+					2 days/week<br>
+					30 minute class<br>
+					1-on-1 teaching
+				</div>
+			</div>
+
+			<div class="column">
+				<div class="box">
+					<strong>Plan D - $75/month</strong><br>
+					Monday to Thursday<br>
+					2 days/week<br>
+					45 minute class<br>
+					4-on-1 teaching
+				</div>
+			</div>
+		</div>
+
+		<h5 class="subtitle">Weekend School Program</h5>
+		<div class="columns">
+			<div class="column">
+				<div class="box">
+					<strong>Plan E - $150/month</strong><br>
+					Saturday and Sunday<br>
+					2 days/week<br>
+					30 minute class<br>
+					1-on-1 teaching
+				</div>
+			</div>
+
+			<div class="column">
+				<div class="box">
+					<strong>Plan F - $100/month</strong><br>
+					Saturday and Sunday<br>
+					2 days/week<br>
+					45 minute class<br>
+					4-on-1 teaching
+				</div>
+			</div>
+		</div>
+		
+		<br>
+		
+		<article class="message">
+		    <form id="checkout" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+			<input type="hidden" name="cmd" value="_s-xclick">
+			<input type="hidden" name="hosted_button_id" value="TGYKKT6Q7KXJW">
+			<input type="hidden" name="currency_code" value="USD">
+			<input type="hidden" name="on0" value="Packages">
+			<input name="notify_url" value="https://alquranlearningcenter.com/web/payment/{{ email  }}" type="hidden">
+			<div class="message-body">
+				<div class="control">
+				    <div class="select is-large is-fullwidth">
+				      <select id="planID" name="os0">
+					<option value="Plan A">Plan A</option>
+					<option value="Plan B">Plan B</option>
+					<option value="Plan C">Plan C</option>
+					<option value="Plan D">Plan D</option>
+					<option value="Plan E">Plan E</option>
+					<option value="Plan F">Plan F</option>
+					<option value="Test">Test</option>
+				      </select>
+				    </div>
+				</div>
+
+				<button onclick="checkoutBtn()"  class="button is-success is-large is-fullwidth">
+					<span class="icon">
+						<i class="fa fa-shopping-cart"></i>
+					</span>
+					<span>Checkout</span>
+				</button>
+			</div>
+                    </form>
+		</article>
+	</div>
+</section>
+
+
+
+<script src="https://www.paypalobjects.com/api/checkout.js" data-version-4 log-level="warn"></script>
+<script src="https://js.braintreegateway.com/web/3.22.2/js/client.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.22.2/js/paypal-checkout.min.js"></script>
+
+<div id="paypal-button"></div>
+
+<script>
+	function checkoutBtn(){
+		var isLoggedIn = false;
+		{% if current_user is not none  %}
+			isLoggedIn = true;
+		{% endif  %}
+		
+		if(isLoggedIn){	
+			document.getElementById("checkout").submit();
+		} else{
+			window.location.replace("{{ url_for('landing_page.signup') }}");
+		}
+	}
+</script>

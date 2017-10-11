@@ -1,7 +1,7 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
 <script type="text/javascript" charset="utf-8">
-	var socket = io.connect('http://' + document.domain + ':' + location.port);
-	var sessionId = '{{ current_user.session[0].session_id  }}'	
+	var socket = io.connect('https://' + document.domain + ':' + location.port);
+	var sessionId = '{{ session_id  }}'	
 
     socket.on('connect', function() {
         socket.emit('enter', {"name": "{{ current_user.fname }} {{ current_user.lname }}", "sessionId": sessionId});
@@ -151,6 +151,7 @@
       </div>
 
       <div class="column">
+
       	<object id="resource" class="resource" type="application/pdf"></object>
        </div>
 	
@@ -181,7 +182,7 @@
 
     <div id="inRoom" class="pannel"></div><br>
 	
-    <iframe style="position:absolute; z-index:-5000;  opacity:0;" src="https://alquranlearningcenter.herokuapp.com/room/{{ current_user.session[0].session_id }}"></iframe> 
+    <iframe style="position:absolute; z-index:-5000;  opacity:0;" src="{{ url_for('call.session', session_id=session_id) }}"></iframe> 
 
     <button class="button is-danger is-fullwidth" onclick="window.location.replace('/')">
       END SESSION

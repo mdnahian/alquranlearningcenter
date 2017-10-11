@@ -2,37 +2,41 @@
     <h3 class="title">
         Schedule
     </h3>
+    
+    {% if current_user.accountType == 'student' %}
+        <h5 class="subtitle">Sessions Completed {{ session_count }}/{{ current_user.total_sessions }}</h5>
+    {% endif %}
 
     <table class="table">
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Proficiency</th>
-                <th>Datetime</th>
-                <th>Duration</th>
+		<th>Day</th>
+                <th>Time Start</th>
+                <th>Time End</th>
                 <th></th>
             </tr>
         </thead>
 
         <tbody>
             {% for session in sessions %}
-                {% if 'user' in session %}
-                    <tr>
-                        <td>{{ session.user.fname }} {{ session.user.lname }}</td>
-                        <td>{{ session.user.proficiency }}</td>
-                        <td>{{ session.datetime }}</td>
-                        <td>{{ session.duration }} hour(s)</td>
-                        <td>
-                            <a onclick="homework('{{ session.user.uid }}')">
-                                <span class="icon is-drk"><i class="fa fa-book"></i></span>
-                            </a>
-                            &nbsp;&nbsp;&nbsp;
-                            <a onclick="message('{{ session.user.uid }}')">
-                                <span class="icon is-drk"><i class="fa fa-comment"></i></span>
-                            </a>
-                        </td>
-                    </tr>
-                {% endif %}
+	    <tr>
+		<td>{{ session.fname }} {{ session.lname }}</td>
+		<td>{{ session.day }}</td>
+		<td>{{ session.time_start }}</td>
+		<td>{{ session.time_end }}</td>
+		<td>
+		{% if current_user.accountType == 'teacher' %}
+		    <a onclick="homework('{{ session.email }}')">
+			<span class="icon is-drk"><i class="fa fa-book"></i></span>
+		    </a>
+		    &nbsp;&nbsp;&nbsp;
+		{% endif %}
+		    <a onclick="message('{{ session.email }}')">
+			<span class="icon is-drk"><i class="fa fa-comment"></i></span>
+		    </a>
+		</td>
+	    </tr>
             {% endfor %}
         </tbody>
     </table>

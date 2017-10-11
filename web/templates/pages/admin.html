@@ -29,7 +29,12 @@
                         <select name="student">
                             <option value="">None</option>
                             {% for student in students %}
-                            	<option value="{{ student.email }}">{{ student.fname }} {{ student.lname }}</option>
+                            	<option value="{{ student.email }}">
+					{{ student.fname }} {{ student.lname }}
+					{% if student.paid == true %}
+					 (PAID)
+					{% endif %}
+				</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -138,10 +143,14 @@
 		<h3 class="subtitle">Students</h3>
                 {% for student in students %}
 			<div class="box">
-			    <strong>{{ student.fname }} {{ student.lname }}</strong> - {{ student.email }}<br>
+			    <strong>{{ student.fname }} {{ student.lname }}</strong> - {{ student.email }}
+			   {% if student.paid == true %}
+						<span style="color:green; font-weight:bold;">(PAID on {{ student.last_paid }})</span>
+					{% endif %} 
+<br>
 			    {% for session in student.session %}
 				    <div class="notification">
-					<button onclick="removeSession('{{ student.email }}', '{{ session.session_id }}')" class="delete"></button>
+					<button onclick="removeSession('{{ student.email }}', '{{ session.session_id }}')" class="delete"></button>	
 					Session ID: <strong>{{ session.session_id }}</strong><br>
 					Day: <strong>{{ session.day }}</strong><br>
 					Start Time: <strong>{{ session.time_start }}</strong><br>
