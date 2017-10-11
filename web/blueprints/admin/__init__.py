@@ -42,13 +42,23 @@ def session():
         }}})
 
         g.mongo.db.alquranlearningcenter.users.update_one({"email": student}, {'$push': {"session": {
-            "session_count": 20,
             "session_id": id,
             "token": token,
             "day": day,
             "time_start": time_start,
             "time_end": time_end
         }}})
+	
+	g.send_email([teacher, student], 'A.L.C. Schedule Update', '''
+	Hello,<br><br>
+	The following session has been added to your schedule:<br><br>
+	Day: <strong>'''+day+'''</strong><br>
+	Time Start: <strong>'''+g.convert_time(time_start)+'''</strong><br>
+	Time End: <strong>'''+g.convert_time(time_end)+'''</strong><br>
+	<br><br>
+	Thank You,
+	A.L.C. Team 
+	''')
 
         #return g.success_msg({"teacher": teacher, "student": student})
 	return redirect(url_for('admin.panel'))
@@ -86,7 +96,6 @@ def panel():
 	if 'last_paid' in student:
             student['paid'] = g.check_date(student['last_paid'])
 	    student['last_paid'] = student['last_paid'].replace(' ', '/')
-        print student['paid']
 	if 'session' not in student:
 	    student['session'] = []
 	else:	

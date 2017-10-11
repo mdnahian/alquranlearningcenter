@@ -125,7 +125,7 @@
 		<h3 class="subtitle">Teachers</h3>
                 {% for teacher in teachers %}
 			<div class="box">
-			    <strong>{{ teacher.fname }} {{ teacher.lname }}</strong> - {{ teacher.email }}<br>
+			    <strong>{{ teacher.fname }} {{ teacher.lname }}</strong> - {{ teacher.email }}  {{teacher.cellPhone}}  {{ teacher.homePhone }}<br>
 			    {% for session in teacher.session %}
 				    <div class="notification">
 					<button onclick="removeSession('{{ teacher.email }}', '{{ session.session_id }}')" class="delete"></button>
@@ -143,9 +143,9 @@
 		<h3 class="subtitle">Students</h3>
                 {% for student in students %}
 			<div class="box">
-			    <strong>{{ student.fname }} {{ student.lname }}</strong> - {{ student.email }}
+			    <strong>{{ student.fname }} {{ student.lname }}</strong> - {{ student.email }}  {{student.cellPhone}}  {{ student.homePhone }}
 			   {% if student.paid == true %}
-						<span style="color:green; font-weight:bold;">(PAID on {{ student.last_paid }})</span>
+						<span style="color:green; font-weight:bold;">(PAID for {{ student.plan  }} on {{ student.last_paid }})</span>
 					{% endif %} 
 <br>
 			    {% for session in student.session %}

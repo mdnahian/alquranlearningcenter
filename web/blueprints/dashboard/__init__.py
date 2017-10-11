@@ -113,7 +113,7 @@ def payment(email):
 				'total_sessions': get_num_sessions(request.form['option_selection1']),
 				'session': session
 			}})
-			payment_successful_email([request.form['payer_email'], 'mdnahian@outlook.com'], request)
+			payment_successful_email([request.form['payer_email'], 'syedakfatima1@gmail.com', 'admin@alquranlearningcenter.com'], request)
 
 
 
