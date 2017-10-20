@@ -12,3 +12,4 @@ var SAMPLE_SERVER_BASE_URL = 'https://alquranlearningcenter.com';
 var API_KEY = '{{ api_key }}';
 var SESSION_ID = '{{ session_id }}';
 var TOKEN = '{{ token }}';
+var ACCOUNT_TYPE = '{{ current_user.accountType }}';

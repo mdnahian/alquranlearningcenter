@@ -112,7 +112,7 @@
 					    };
 					    xhttp.open("POST", "{{ url_for('admin.remove_session') }}", true);
 					    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-					    xhttp.send("email="+email+"&session_id="+sessionId);
+					    xhttp.send("email="+email+"&sid="+sessionId);
     }
 
 </script>
@@ -125,10 +125,10 @@
 		<h3 class="subtitle">Teachers</h3>
                 {% for teacher in teachers %}
 			<div class="box">
-			    <strong>{{ teacher.fname }} {{ teacher.lname }}</strong> - {{ teacher.email }}  {{teacher.cellPhone}}  {{ teacher.homePhone }}<br>
+			    <strong>{{ teacher.fname }} {{ teacher.lname }}</strong> - <a href="{{ url_for('admin.view_user', email=teacher.email)  }}">View</a><br>
 			    {% for session in teacher.session %}
 				    <div class="notification">
-					<button onclick="removeSession('{{ teacher.email }}', '{{ session.session_id }}')" class="delete"></button>
+					<button onclick="removeSession('{{ teacher.email }}', '{{ session.sid }}')" class="delete"></button>
 					Session ID: <strong>{{ session.session_id }}</strong><br>
 					Day: <strong>{{ session.day }}</strong><br>
 					Start Time: <strong>{{ session.time_start }}</strong><br>
@@ -143,14 +143,14 @@
 		<h3 class="subtitle">Students</h3>
                 {% for student in students %}
 			<div class="box">
-			    <strong>{{ student.fname }} {{ student.lname }}</strong> - {{ student.email }}  {{student.cellPhone}}  {{ student.homePhone }}
+			    <strong>{{ student.fname }} {{ student.lname }}</strong> - <a href="{{ url_for('admin.view_user', email=student.email)  }}">View</a>
 			   {% if student.paid == true %}
 						<span style="color:green; font-weight:bold;">(PAID for {{ student.plan  }} on {{ student.last_paid }})</span>
 					{% endif %} 
 <br>
 			    {% for session in student.session %}
 				    <div class="notification">
-					<button onclick="removeSession('{{ student.email }}', '{{ session.session_id }}')" class="delete"></button>	
+					<button onclick="removeSession('{{ student.email }}', '{{ session.sid }}')" class="delete"></button>	
 					Session ID: <strong>{{ session.session_id }}</strong><br>
 					Day: <strong>{{ session.day }}</strong><br>
 					Start Time: <strong>{{ session.time_start }}</strong><br>

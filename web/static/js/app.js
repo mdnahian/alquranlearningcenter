@@ -1,6 +1,8 @@
 var apiKey,
     sessionId,
-    token;
+    token,
+    accountType,
+    ffWhitelistVersion;
 
 $(document).ready(function() {
   // See the confing.js file.
@@ -8,65 +10,120 @@ $(document).ready(function() {
     apiKey = API_KEY;
     sessionId = SESSION_ID;
     token = TOKEN;
-    initializeSession();
-  } else if (SAMPLE_SERVER_BASE_URL) {
-    // Make an Ajax request to get the OpenTok API key, session ID, and token from the server
-    $.get(SAMPLE_SERVER_BASE_URL + '/session', function(res) {
-      apiKey = res.apiKey;
-      sessionId = res.sessionId;
-      token = res.token;
-
-      initializeSession();
-    });
+    accountType = ACCOUNT_TYPE;
+   
+    if(accountType == 'teacher'){
+	if(chrome && chrome.runtime && chrome.runtime.sendMessage) {
+  		chrome.runtime.sendMessage(
+    			"faidodiononpbbplbjppmandaplonida",
+    			{type: "isInstalled"},
+    			function(response) {
+				console.log(response);
+				if(response){
+					initializeSession2();
+				} else {
+					document.getElementById("installModal").style.display = 'block';
+				}
+			}
+  		);
+}
+    } else {
+	initializeSession2();
+    }
   }
 });
 
-function initializeSession() {
-  var session = OT.initSession(apiKey, sessionId);
 
-  // Subscribe to a newly created stream
-  session.on('streamCreated', function(event) {
-    var subscriberOptions = {
-      subscribeToAudio:true,
-      subscribeToVideo:false,
-      insertMode: 'append',
-      width: '100%',
-      height: '100%'
-    };
-    session.subscribe(event.stream, 'subscriber', subscriberOptions, function(error) {
+function installApp(){
+	chrome.webstore.install('https://chrome.google.com/webstore/detail/faidodiononpbbplbjppmandaplonida',
+                function(msg) {
+                        location.reload();
+                },
+                function(error){
+                        console.log(error);
+			window.location.replace('/')
+                });
+	document.getElementById('installModal').style.display = 'none';
+}
+
+
+function initializeSession2(){
+	var extensionId = 'faidodiononpbbplbjppmandaplonida';
+    // If you register your domain with the the Firefox screen-sharing whitelist, instead of using
+    // a Firefox screen-sharing extension, set this to the Firefox version number, such as 36, in which
+    // your domain was added to the whitelist:
+    var ffWhitelistVersion; // = '36';
+    var session = OT.initSession(apiKey, sessionId);
+    session.connect(token, function(error) {
       if (error) {
-        console.log('There was an error publishing: ', error.name, error.message);
+        alert('Error connecting to session: ' + error.message);
+        return;
+      }
+      // publish a stream using the camera and microphone:
+      var publisher = OT.initPublisher('camera-publisher');
+      session.publish(publisher);
+      console.log(accountType);
+
+      if(accountType == 'teacher'){
+	screenshare(session);
+      }
+
+      //document.getElementById('shareBtn').disabled = false;
+    });
+    session.on('streamCreated', function(event) {
+      if (event.stream.videoType === 'screen') {
+        // This is a screen-sharing stream published by another client
+        var subOptions = {
+          width: '100%',
+          height: '960px'
+        };
+        session.subscribe(event.stream, 'screen-subscriber', subOptions);
+      } else {
+        // This is a stream published by another client using the camera and microphone
+        session.subscribe(event.stream, 'camera-subscriber');
       }
     });
-  });
+    // For Google Chrome only, register your extension by ID,
+    // You can find it at chrome://extensions once the extension is installed
+    OT.registerScreenSharingExtension('chrome', extensionId, 2);
+}
 
-  session.on('sessionDisconnected', function(event) {
-    console.log('You were disconnected from the session.', event.reason);
-  });
 
-  // Connect to the session
-  session.connect(token, function(error) {
-    // If the connection is successful, initialize a publisher and publish to the session
-    if (!error) {
-      var publisherOptions = {
-        videoSource: null,
-        insertMode: 'append',
-        width: '100%',
-        height: '100%'
-      };
-      var publisher = OT.initPublisher('publisher', publisherOptions, function(error) {
-        if (error) {
-          console.log('There was an error initializing the publisher: ', error.name, error.message);
-          return;
-        }
-        session.publish(publisher, function(error) {
-          if (error) {
-            console.log('There was an error publishing: ', error.name, error.message);
+
+function screenshare(session) {
+	OT.checkScreenSharingCapability(function(response) {
+        console.info(response);
+        if (!response.supported || response.extensionRegistered === false) {
+          alert('This browser does not support screen sharing.');
+        } else if (response.extensionInstalled === false
+            && (response.extensionRequired || !ffWhitelistVersion)) {
+          alert('Please install the screen-sharing extension and load this page over HTTPS.');
+        } else if (ffWhitelistVersion && navigator.userAgent.match(/Firefox/)
+          && navigator.userAgent.match(/Firefox\/(\d+)/)[1] < ffWhitelistVersion) {
+            alert('For screen sharing, please update your version of Firefox to '
+              + ffWhitelistVersion + '.');
+        } else {
+          // Screen sharing is available. Publish the screen.
+          // Create an element, but do not display it in the HTML DOM:
+          var screenContainerElement = document.createElement('div');
+          var screenSharingPublisher = OT.initPublisher(
+            screenContainerElement,
+            { 
+		videoSource : 'screen'
+	    },
+            function(error) {
+              if (error) {
+                alert('Something went wrong: ' + error.message);
+              } else {
+                session.publish(
+                  screenSharingPublisher,
+                  function(error) {
+                    if (error) {
+                      alert('Something went wrong: ' + error.message);
+                    }
+                  });
+              }
+            });
           }
-        });
-      });
-    } else {
-      console.log('There was an error connecting to the session: ', error.name, error.message);
-    }
-  });
+        });      
 }

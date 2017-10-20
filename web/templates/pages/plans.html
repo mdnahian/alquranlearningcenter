@@ -133,8 +133,10 @@
 			isLoggedIn = true;
 		{% endif  %}
 		
-		if(isLoggedIn){	
-			document.getElementById("checkout").submit();
+		if(isLoggedIn){
+			$.get("{{ url_for('dashboard.checkout', plan='') }}"+document.getElementById('planID').value, function(data, status){
+            			document.getElementById("checkout").submit();
+        		});
 		} else{
 			window.location.replace("{{ url_for('landing_page.signup') }}");
 		}

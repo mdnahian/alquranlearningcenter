@@ -16,58 +16,68 @@ def web():
 	u = g.mongo.db.alquranlearningcenter.users.find_one({'email': g.session['user']['email']})
 	u['_id'] = False
 	g.session['user'] = u
+	if 'specifics' not in g.session['user']:
+		return redirect(url_for('dashboard.specifics'))
 	if g.session['user']['accountType'] == 'admin':
 		return redirect(url_for('admin.panel'))
 	if g.session['user']['accountType'] == 'student' and ('total_sessions' not in g.session['user'] or 'last_paid' not in g.session['user']):
 		return redirect(url_for('dashboard.plans'))
 	if g.session['user']['accountType'] == 'student' and g.check_date(g.session['user']['last_paid']) == False:
 		return redirect(url_for('dashboard.plans'))
-	if 'specifics' in g.session['user']:
-		session_count = 0
+	session_count = 0
+	if g.session['user']['accountType'] == 'student':
+		for sess in g.session['user']['session']:
+			if 'session_count' in sess:
+				session_count += sess['session_count']
+		if session_count >= g.session['user']['total_sessions']:
+			return redirect(url_for('dashboard.plans', session_count=str(session_count), renew=True))	
+
+	next_session = None
+	sess_count = 0
+	sessions = []
+	if 'session' in g.session['user']:
+		today = g.convert_to_local(datetime.now()).strftime("%A")
+		current_time = g.from_server_time(datetime.now().strftime("%Y-%m-%d %H:%M:%S")).time()
+		users = []
 		if g.session['user']['accountType'] == 'student':
-			for sess in g.session['user']['session']:
-				if 'session_count' in sess:
-					session_count += sess['session_count']
-                	if session_count >= g.session['user']['total_sessions']:
-                                return redirect(url_for('dashboard.plans', session_count=str(session_count), renew=True))	
-
-		next_session = None
-		sessions = []
-		if 'session' in g.session['user']:
-			today = time.strftime("%A")
-			yesterday = (datetime.now() - timedelta(days=1)).strftime('%A')
-			current_time = g.from_server_time(datetime.now().strftime("%Y-%m-%d %H:%M:%S")).time()
-			users = g.mongo.db.alquranlearningcenter.users.find({})
-			for session in g.session['user']['session']:
-				for user in users:
-					if user['email'] != g.session['user']['email']:
-						if 'session' in user:
-							for ss in user['session']:
-								if ss['session_id'] == session['session_id']:
-									s = ss.copy()
-									s['time_start'] = g.convert_time(s['time_start'])
-                                                                        s['time_end'] = g.convert_time(s['time_end'])
-                                                                        s['fname'] = user['fname']
-                                                                        s['lname'] = user['lname']
-                                                                        s['email'] = user['email']
-									sessions.append(s)
-									if session['day'] == today or session['day'] == yesterday:
-										#try:
-										#	time_start = datetime.strptime(session['time_start'], '%H:%M %p').time()
-										#	time_end = datetime.strptime(session['time_end'], '%H:%M %p').time()
-										#except:
-										time_start = g.to_server_time(session['time_start']).time()
-										time_end = g.to_server_time(session['time_end']).time()
-
-										#print current_time
-										#print time_start
-										#print time_end
-										if current_time >= time_start and current_time <= time_end:
-											next_session = s
-		print sessions	
-		return render_template('template.html', page='dashboard.html', current_user=g.session['user'], next_session=next_session, sessions=sessions, session_count=g.session['user']['session_count'])
-	else:
-		return redirect(url_for('dashboard.specifics'))
+			users = g.mongo.db.alquranlearningcenter.users.find({'accountType': 'teacher'})
+		else:
+			users = g.mongo.db.alquranlearningcenter.users.find({'accountType': 'student'})
+		for session in g.session['user']['session']:
+			for user in users:
+				if user['email'] != g.session['user']['email']:
+					if 'session' in user:
+						for ss in user['session']:
+							if ss['session_id'] == session['session_id']:
+								s = ss.copy()
+								tstart = s['time_start']
+								s['time_start'] = g.convert_time(s['time_start'])
+								tend = s['time_end']
+								s['time_end'] = g.convert_time(s['time_end'])
+								s['fname'] = user['fname']
+								s['lname'] = user['lname']
+								s['email'] = user['email']
+								sessions.append(s)
+								#print s['day']
+								#print today
+								if s['day'] == today:
+									#try:
+									#	time_start = datetime.strptime(session['time_start'], '%H:%M %p').time()
+									#	time_end = datetime.strptime(session['time_end'], '%H:%M %p').time()
+									#except:
+									time_start = g.to_server_time(tstart).time()
+									time_end = g.to_server_time(tend).time()
+										
+									#print current_time
+									#print time_start
+									#print time_end
+									if current_time >= time_start and current_time <= time_end:
+										next_session = s.copy()
+										if sess_count >= 1:
+											next_session['lname'] = next_session['lname'] + ' +'+str(sess_count)+' more'
+										sess_count += 1
+	#print sessions	
+	return render_template('template.html', page='dashboard.html', current_user=g.session['user'], next_session=next_session, sessions=sessions, session_count=g.session['user']['session_count'])
 
 
 
@@ -88,6 +98,16 @@ def plans():
 	return render_template('template.html', page='plans.html', session_count=session_count,  current_user=current_user, email=email, renew=renew, paypal_api_key=paypal_api_key)
 
 
+@dashboard.route('/checkout/<plan>')
+def checkout(plan):
+	print plan
+	g.session['checkout'] = {
+		'plan': plan
+	}
+	print g.session['checkout']
+	return g.session['checkout']['plan']
+
+
 def get_num_sessions(option):
 	sessions = 0
 	if option == 'Plan C' or option == 'Plan D' or option == 'Plan E' or option == 'Plan F':
@@ -104,23 +124,26 @@ def payment(email):
 	if request.method == 'POST':
 		status = request.form['payment_status']
 		if status == 'Completed':
-			session = []
-			if 'session' in g.session['user']:
-				session = g.session['user']['session']
-			g.mongo.db.alquranlearningcenter.users.update_one({'email': email}, {'$set': {
-				'plan': request.form['option_selection1'],
-				'last_paid': datetime.now().strftime("%m %d %Y"),
-				'total_sessions': get_num_sessions(request.form['option_selection1']),
-				'session': session
-			}})
-			payment_successful_email([request.form['payer_email'], 'syedakfatima1@gmail.com', 'admin@alquranlearningcenter.com'], request)
+			#session = []
+			#if 'session' in g.session['user']:
+			#	session = g.session['user']['session']
+			#g.mongo.db.alquranlearningcenter.users.update_one({'email': email}, {'$set': {
+			#	'plan': request.form['option_selection1'],
+			#	'last_paid': datetime.now().strftime("%m %d %Y"),
+			#	'total_sessions': get_num_sessions(request.form['option_selection1']),
+			#	'session': session
+			#}})
+			#payment_successful_email([request.form['payer_email'], 'syedakfatima1@gmail.com', 'admin@alquranlearningcenter.com'], request)
+			return '200'
+	return '400'
+	
 
 
 
-def payment_successful_email(to, request):
+def payment_successful_email(to, fname, lname, plan, date):
 	g.send_email(to, 'A.L.C. Payment Successful', '''                     
 Hello,<br><br>
-This is to confirm that you, '''+request.form['first_name']+' '+request.form['last_name']+''', has paid '''+request.form['auth_amount']+''' for '''+request.form['option_selection1']+''' starting '''+request.form['payment_date']+'''.<br><br>
+This is to confirm that you, '''+fname+' '+lname+''', has paid for '''+plan+''' starting '''+date+'''.<br><br>
 You will receive an email soon confirming your attendance.
 <br><br>
 Thank You,
@@ -133,6 +156,20 @@ A.L.C.
 def complete():
 	if g.isLoggedIn() is False:
                 return redirect(url_for('landing_page.index'))
+	if 'paypal' not in request.referrer or 'checkout' not in g.session:
+		return redirect(url_for('dashboard.plans'))
+	session = []
+	if 'session' in g.session['user']:
+		session = g.session['user']['session']
+	date = datetime.now().strftime("%m %d %Y")
+	g.mongo.db.alquranlearningcenter.users.update_one({'email': g.session['user']['email']}, {'$set': {
+		'plan': g.session['checkout']['plan'],
+		'last_paid': date,
+		'session_count': 1,
+		'total_sessions': get_num_sessions(g.session['checkout']['plan']),
+		'session': session
+	}})
+	payment_successful_email([g.session['user']['email'], 'syedakfatima1@gmail.com', 'admin@alquranlearningcenter.com'], g.session['user']['fname'], g.session['user']['lname'], g.session['checkout']['plan'], date.replace(' ', '/'))	
 	return render_template('template.html', page='complete.html', current_user=g.session['user'])
 
 
@@ -182,10 +219,14 @@ def call(session_id):
 					"session.session_id": session_id
 				}, {"$set": {"session.$.last_session": current_date}})
 				g.mongo.db.alquranlearningcenter.users.update_one({"email": g.session['user']['email']}, {"$inc": {"session_count": 1}})
+	
+	api_key = '45966672'	
+	token = g.generate_token(session_id)
+	
 	if g.session['user']['accountType'] == 'teacher':
-		return render_template('template.html', page='call_teacher.html', current_user=g.session['user'], session_id=session_id)
+		return render_template('template.html', page='call_teacher.html', current_user=g.session['user'], session_id=session_id, token=token, api_key=api_key)
 	elif g.session['user']['accountType'] == 'student':
-		return render_template('template.html', page='call_student.html', current_user=g.session['user'], session_id=session_id)
+		return render_template('template.html', page='call_student.html', current_user=g.session['user'], session_id=session_id, token=token, api_key=api_key)
 
 
 

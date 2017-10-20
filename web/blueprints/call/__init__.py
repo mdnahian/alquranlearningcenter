@@ -12,10 +12,10 @@ def session(session_id):
 
     for sss in g.session['user']['session']:
         if sss['session_id'] == session_id:
-		token = sss['token']
+		token = g.generate_token(session_id)
 		exists = True
 		break
 
     if exists:
-        return render_template('template.html', page='call.html', current_user=g.session['user'],  api_key='45966672', session_id=session_id, token=token)
+        return render_template('pages/call.html', current_user=g.session['user'],  api_key='45966672', session_id=session_id, token=token)
     return g.error_msg('failed to connect -> session_id: '+session_id)

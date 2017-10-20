@@ -20,21 +20,6 @@ app.register_blueprint(admin)
 app.register_blueprint(call)
 bcrypt = Bcrypt(app)
 mongo = PyMongo(app)
-#socketio = SocketIO(app)
-
-
-#@socketio.on('enter')
-#def on_enter(enter):
-#    socketio.emit('new_user', enter)
-
-#@socketio.on('remove')
-#def on_remove(remove):
-#    socketio.emit('remove_user', remove)
-
-#@socketio.on('resource')
-#def on_resource(resource):
-#    socketio.emit('new_resource', resource)
-
 
 
 @app.context_processor
